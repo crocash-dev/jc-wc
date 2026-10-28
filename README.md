@@ -11,3 +11,7 @@ My implementation works in accordance with the `man wc` page for the features:
 - -m : Char count of file(s) or STDIN
 
 With the usage ./jc-wc -[arg] [file ...]
+
+## Installation 
+
+To build, install SBCL and quicklisp on your machine, clone the repo, and run `sbcl --script build.lisp` in the resultant directory.
