@@ -36,7 +36,9 @@
 ;; Runs the calculation and prints results
 (defun run-calculation (arg input-file)
   ;; If arg nil, there are no CLI arguments and thus standard output
-  (cond	((not arg)
+  (cond	((not (uiop:file-exists-p input-file))
+	 (format t "~&File not found. ~&"))
+	 ((not arg)
 	 (format t "~A ~A ~A ~A~&"
 		 (sum-bytes input-file)
 		 (sum-lines input-file)
