@@ -35,7 +35,6 @@
     sum))
 
 ;; Byte count
-
 (defun sum-bytes (input-file)
   (let ((sum 0) (file (open input-file :element-type '(unsigned-byte 8))))
     (iter (for byte in-stream file using #'read-byte)
