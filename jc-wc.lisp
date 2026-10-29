@@ -22,13 +22,17 @@
   (let* ((args (rest sb-ext:*posix-argv*)))
     ;; If there's no file (second args) process the piped input
     (cond
-      ;; Only filename specified, so run-calculation has nil 1st arg
-      ((not (member (first args) *acceptable-args* :test #'string=))
-       (run-calculation 'nil (first args)))
+      ;; No args at all nor filename, read from STDIN
+      ((not args)
+       (run-calculation-stdin nil *standard-input*))
       ;; only acceptable arg given, read from STDIN
       ((and (member (first args) *acceptable-args* :test #'string=)
 	    (not (second args))) 
-	   (run-calculation-stdin (first args) *standard-input*))    
+       (run-calculation-stdin (first args) *standard-input*))
+      
+      ;; Only filename specified, so run-calculation has nil 1st arg
+      ((not (member (first args) *acceptable-args* :test #'string=))
+       (run-calculation 'nil (first args)))
       ;; Otherwise process the file with correct arg applied
       (t (loop-calculations (first args) (rest args))))))
 
@@ -38,11 +42,11 @@
   ;; If arg nil, there are no CLI arguments and thus standard output
   (cond	((not (uiop:file-exists-p input-file))
 	 (format t "~&File not found. ~&"))
-	 ((not arg)
+	((not arg)
 	 (format t "~A ~A ~A ~A~&"
-		 (sum-bytes input-file)
 		 (sum-lines input-file)
 		 (sum-words input-file)
+		 (sum-bytes input-file)
 		 input-file))
 	;; Otherwise CLI args are processed
 	((equal arg "-c")
@@ -61,10 +65,8 @@
 (defun run-calculation-stdin (arg input-stream)
   ;; If arg nil, there are no CLI arguments and thus standard output
   (cond	((not arg)
-	 (format t "~A ~A ~A ~&"
-		 (sum-bytes-stdin input-stream)
-		 (sum-lines-stdin input-stream)
-		 (sum-words-stdin input-stream)))
+	 ;(format t "~{~A ~}~&" (sum-all-stdin input-stream))
+	 (format t "This version does not support STDIN with no arguments."))
 	;; Otherwise CLI args are processed
 	((equal arg "-c")
 	 (format t "~A ~&" (sum-bytes-stdin input-stream)))
@@ -75,6 +77,21 @@
 	((equal arg "-w")
 	 (format t "~A ~&" (sum-words-stdin input-stream)))))
 
+;; (defun sum-all-stdin (input-stream)
+;;   (let ((previous-char #\A) (char-counter 0) (word-sum 0) (line-sum 0) (bytes-sum 0))
+;;     (iter (for char in-stream input-stream using #'read-char)
+;;       (incf char-counter)
+;;       (cond ((= char-counter 7)
+;; 	     (incf bytes-sum)
+;; 	     (setf char-counter 0)))
+;;       (cond ((and (not (member previous-char *word-delimeters*))
+;; 		  (member char *word-delimeters*))
+;; 	     (incf word-sum)
+;; 	     (setf previous-char char))
+;; 	    (t (setf previous-char char))))
+;;     (list line-sum word-sum bytes-sum)))
+    
+   
 
 ;; Wordcount
 (defun sum-words (input-file)
