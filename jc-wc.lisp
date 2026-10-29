@@ -7,7 +7,7 @@
 
 ;; Input file for testing
 ;;(defvar *input-file* "test.txt")
-(defparameter *test-list* '("test.txt" "compare.txt" "test.txt"))
+;;(defparameter *test-list* '("test.txt" "compare.txt" "test.txt"))
 
 
 ;; Word delimters for sum-words
